@@ -29,6 +29,7 @@ function Login() {
         withCredentials: true,
       }).then(({ data }) => {
         setCookie("accessToken", data.data.accessToken);
+        setCookie("username", data.data.username);
         confirm(data.message);
         navigate("/home", { replace: true });
       });

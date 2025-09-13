@@ -1,4 +1,4 @@
-const COOKIE_PREFIX = "myapp_";
+const COOKIE_PREFIX = "BadeHavaApp_";
 
 export function getCookie(key: string): string | null {
   const name = COOKIE_PREFIX + key + "=";
