@@ -25,7 +25,7 @@ function Login() {
     if (username && password) {
       const data = { username, password };
 
-      const result = AXIOS.post(`/auth/login`, data, {
+      const result = AXIOS.post("/auth/login", data, {
         withCredentials: true,
       }).then(({ data }) => {
         setCookie("accessToken", data.data.accessToken);
