@@ -21,6 +21,10 @@ AXIOS.interceptors.response.use(
       case 500:
         alert("Server Error");
         break;
+      default:
+        // FIXME: remove this line later
+        alert(error.response.data.message);
+        break;
     }
 
     return Promise.reject(error);

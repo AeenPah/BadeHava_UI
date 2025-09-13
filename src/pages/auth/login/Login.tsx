@@ -1,6 +1,18 @@
+import { Link, useNavigate } from "react-router-dom";
 import AXIOS from "../../../lib/AxiosInstance";
+import { setCookie } from "../../../utils/cookiesManagement";
 
 function Login() {
+  /* -------------------------------------------------------------------------- */
+  /*                              React Router Dom                              */
+  /* -------------------------------------------------------------------------- */
+
+  const navigate = useNavigate();
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Functions                                 */
+  /* -------------------------------------------------------------------------- */
+
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -13,7 +25,13 @@ function Login() {
     if (username && password) {
       const data = { username, password };
 
-      const result = AXIOS.post(`/auth/login`, data);
+      const result = AXIOS.post(`/auth/login`, data, {
+        withCredentials: true,
+      }).then(({ data }) => {
+        setCookie("accessToken", data.data.accessToken);
+        confirm(data.message);
+        navigate("/home", { replace: true });
+      });
 
       console.log(result);
     } else {
@@ -44,6 +62,8 @@ function Login() {
 
         <input type="submit" value="Submit" />
       </form>
+
+      <Link to="/auth/register">Register here!</Link>
     </div>
   );
 }

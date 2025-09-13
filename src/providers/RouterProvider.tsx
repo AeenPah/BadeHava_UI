@@ -3,6 +3,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import Login from "../pages/auth/login/Login";
 import MainLayout from "../layouts/MainLayout";
 import Register from "../pages/auth/login/Register";
+import Home from "../pages/main/home/Home";
 
 function RouterProvider() {
   return (
@@ -14,7 +15,9 @@ function RouterProvider() {
           <Route path="register" element={<Register />} />
         </Route>
 
-        <Route path="/" element={<MainLayout />}></Route>
+        <Route path="/" element={<MainLayout />}>
+          <Route path="home" element={<Home />} />
+        </Route>
 
         <Route path="*" element={<div>Page not found</div>} />
       </Routes>
