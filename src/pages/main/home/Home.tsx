@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import AXIOS from "../../../lib/AxiosInstance";
-import { getCookie } from "../../../utils/cookiesManagement";
+import { getCookie, setCookie } from "../../../utils/cookiesManagement";
 
 type TUserType = { userId: number; username: string };
 
@@ -43,16 +43,30 @@ function Home() {
   }, [searchInput]);
 
   /* -------------------------------------------------------------------------- */
-  /*                                  Function                                  */
+  /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
 
   function searchOnChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchInput(event.target.value);
   }
 
+  function logoutOnclick() {
+    AXIOS.post("auth/logout", undefined, {
+      headers: {
+        Authorization: `Bearer ${getCookie("accessToken")}`,
+      },
+      withCredentials: true,
+    }).then(() => {
+      setCookie("accessToken", "", -1);
+      setCookie("username", "", -1);
+      window.location.reload();
+    });
+  }
+
   return (
     <div>
       <h4>Home</h4>
+      <button onClick={logoutOnclick}>Logout</button> <br />
       <input
         type="text"
         name="searchUser"
@@ -60,11 +74,10 @@ function Home() {
         placeholder="Search Users ..."
         onChange={(e) => searchOnChange(e)}
       />
-
       {foundUsers &&
         foundUsers.map((u) => (
           <div key={u.username}>
-            {u.userId} ) {u.username}
+            {u.userId}- {u.username}
           </div>
         ))}
     </div>

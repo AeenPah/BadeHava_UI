@@ -16,6 +16,7 @@ function RouterProvider() {
         </Route>
 
         <Route path="/" element={<MainLayout />}>
+          <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
         </Route>
 

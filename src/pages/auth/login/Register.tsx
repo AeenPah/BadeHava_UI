@@ -1,7 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AXIOS from "../../../lib/AxiosInstance";
 
 function Register() {
+  /* -------------------------------------------------------------------------- */
+  /*                              React Router Dom                              */
+  /* -------------------------------------------------------------------------- */
+
+  const navigate = useNavigate();
+
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
@@ -18,7 +24,9 @@ function Register() {
     if (username && password) {
       const data = { username, password };
 
-      const result = AXIOS.post(`/auth/register`, data);
+      const result = AXIOS.post(`/auth/register`, data).then(() =>
+        navigate("/auth/login")
+      );
 
       console.log(result);
     } else {
