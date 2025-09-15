@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setCookie } from "../utils/cookiesManagement";
 
-const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_URL + "/api";
 
 const AXIOS = axios.create({
   baseURL,

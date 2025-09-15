@@ -4,7 +4,11 @@ import AXIOS from "../lib/AxiosInstance";
 
 type TUserType = { userId: number; username: string };
 
-function SearchUsers() {
+function SearchUsers({
+  friendRequestOnclick,
+}: {
+  friendRequestOnclick: (userId: number) => void;
+}) {
   /* -------------------------------------------------------------------------- */
   /*                                 React Hooks                                */
   /* -------------------------------------------------------------------------- */
@@ -63,6 +67,9 @@ function SearchUsers() {
         foundUsers.map((u) => (
           <div key={u.username}>
             {u.userId}- {u.username}
+            <button onClick={() => friendRequestOnclick(u.userId)}>
+              + Friend Request
+            </button>
           </div>
         ))}
     </Fragment>
