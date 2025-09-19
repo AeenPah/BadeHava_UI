@@ -39,8 +39,7 @@ AXIOS.interceptors.response.use(
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 401) {
-            console.log("Redirect to login page");
-            // window.location.href = "/auth/login";
+            window.location.href = "/auth/login";
           }
         }
         return Promise.reject(err);

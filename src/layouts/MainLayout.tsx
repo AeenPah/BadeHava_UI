@@ -25,8 +25,12 @@ function MainLayout() {
     }
   }, []);
 
+  /* -------------------------------------------------------------------------- */
+  /*                                  Functions                                 */
+  /* -------------------------------------------------------------------------- */
+
   return (
-    <div>
+    <div style={{ backgroundColor: "lightcoral" }}>
       MainLayout
       <h3>Username: {username}</h3>
       <Outlet />
