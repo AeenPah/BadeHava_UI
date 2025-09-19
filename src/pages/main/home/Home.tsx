@@ -10,6 +10,12 @@ type TNotification = {
   eventTime: string;
 };
 
+type TFriend = {
+  userId: number;
+  username: string;
+  createAt: Date;
+};
+
 const EVENT = ["FriendRequest", "Block", "ChatRequest"];
 
 function Home() {
@@ -18,14 +24,14 @@ function Home() {
   /* -------------------------------------------------------------------------- */
 
   const [notifications, setNotification] = useState<TNotification[]>([]);
+  const [Friends, setFriends] = useState<TFriend[]>([]);
 
   useEffect(() => {
-    AXIOS.get("event", {
+    AXIOS.get("event/", {
       headers: {
         Authorization: `Bearer ${getCookie("accessToken")}`,
       },
     }).then((res) => {
-      console.log(res.data.data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const tempNotifications: TNotification[] = res.data.data.map((n: any) => {
         return {
@@ -37,6 +43,14 @@ function Home() {
       });
 
       setNotification(tempNotifications);
+    });
+
+    AXIOS.get("user/friends/", {
+      headers: {
+        Authorization: `Bearer ${getCookie("accessToken")}`,
+      },
+    }).then((res) => {
+      setFriends(res.data.data);
     });
     return () => {};
   }, []);
@@ -53,7 +67,7 @@ function Home() {
       headers: {
         Authorization: `Bearer ${getCookie("accessToken")}`,
       },
-    }).then((res) => alert(res));
+    }).then((res) => alert(res.data.data));
   }
 
   function logoutOnclick() {
@@ -106,6 +120,15 @@ function Home() {
         </div>
       ))}
       <SearchUsers friendRequestOnclick={(userId) => friendRequest(userId)} />
+
+      {/* Friend List */}
+      <h4>Friends</h4>
+      {Friends.map((f) => (
+        <div key={f.username}>{f.username}</div>
+      ))}
+
+      {/* Chat Sections */}
+      <h4>Chat</h4>
     </div>
   );
 }
