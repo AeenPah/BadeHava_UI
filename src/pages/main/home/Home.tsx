@@ -2,6 +2,8 @@ import { getCookie, setCookie } from "../../../utils/cookiesManagement";
 import SearchUsers from "../../../components/SearchUsers";
 import { useEffect, useState } from "react";
 import AXIOS from "../../../lib/AxiosInstance";
+import usePresenceHub from "../../../hooks/usePresenceHub ";
+import { Outlet, useNavigate } from "react-router-dom";
 
 type TNotification = {
   eventId: number;
@@ -20,6 +22,12 @@ const EVENT = ["FriendRequest", "Block", "ChatRequest"];
 
 function Home() {
   /* -------------------------------------------------------------------------- */
+  /*                              React Router Dom                              */
+  /* -------------------------------------------------------------------------- */
+
+  const navigation = useNavigate();
+
+  /* -------------------------------------------------------------------------- */
   /*                                 React Hooks                                */
   /* -------------------------------------------------------------------------- */
 
@@ -27,6 +35,46 @@ function Home() {
   const [Friends, setFriends] = useState<TFriend[]>([]);
 
   useEffect(() => {
+    getEvents();
+
+    AXIOS.get("user/friends/", {
+      headers: {
+        Authorization: `Bearer ${getCookie("accessToken")}`,
+      },
+    }).then((res) => {
+      setFriends(res.data.data);
+    });
+    return () => {};
+  }, []);
+
+  /* -------------------------------------------------------------------------- */
+  /*                               usePresenceHub                               */
+  /* -------------------------------------------------------------------------- */
+
+  const presenceHub = usePresenceHub();
+
+  useEffect(() => {
+    presenceHub?.on("FailedRequest", (_, message) => alert(message));
+    presenceHub?.on("RequestSent", (_, data) => {
+      alert(data.message);
+      navigation(data.roomId);
+    });
+    presenceHub?.on("ChatRequest", (_, message) => {
+      alert(JSON.stringify(message));
+      getEvents();
+    });
+    presenceHub?.on("ChatReqRefused", (_, message) => alert(message));
+    presenceHub?.on("JoinedRoom", (roomId) => {
+      console.log(roomId);
+      navigation(roomId);
+    });
+  }, [navigation, presenceHub]);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Functions                                 */
+  /* -------------------------------------------------------------------------- */
+
+  function getEvents() {
     AXIOS.get("event/", {
       headers: {
         Authorization: `Bearer ${getCookie("accessToken")}`,
@@ -44,20 +92,7 @@ function Home() {
 
       setNotification(tempNotifications);
     });
-
-    AXIOS.get("user/friends/", {
-      headers: {
-        Authorization: `Bearer ${getCookie("accessToken")}`,
-      },
-    }).then((res) => {
-      setFriends(res.data.data);
-    });
-    return () => {};
-  }, []);
-
-  /* -------------------------------------------------------------------------- */
-  /*                                  Functions                                 */
-  /* -------------------------------------------------------------------------- */
+  }
 
   function friendRequest(userId: number) {
     const data = {
@@ -98,6 +133,24 @@ function Home() {
     }).then((res) => alert(res.data.message));
   }
 
+  function requestChat(userId: number) {
+    presenceHub?.invoke("RequestChat", userId.toString());
+  }
+
+  function chatRespond(
+    eventId: number,
+    type: "JoinChat" | "RefuseChatRequest"
+  ) {
+    switch (type) {
+      case "JoinChat":
+        presenceHub?.invoke("JoinChat", eventId);
+        break;
+      case "RefuseChatRequest":
+        presenceHub?.invoke("RefuseChatRequest", eventId);
+        break;
+    }
+  }
+
   return (
     <div style={{ backgroundColor: "lightblue" }}>
       <h4>Home</h4>
@@ -111,12 +164,31 @@ function Home() {
           <span style={{ fontWeight: "bold" }}> {n.sender}</span>
           at <i>{n.eventTime}</i>
           <br />
-          <button onClick={() => responseFriendRequest(n.eventId, "Accept")}>
-            Accept
-          </button>
-          <button onClick={() => responseFriendRequest(n.eventId, "Decline")}>
-            Decline
-          </button>
+          {n.type === 0 ? (
+            <>
+              <button
+                onClick={() => responseFriendRequest(n.eventId, "Accept")}
+              >
+                Accept
+              </button>
+              <button
+                onClick={() => responseFriendRequest(n.eventId, "Decline")}
+              >
+                Decline
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => chatRespond(n.eventId, "JoinChat")}>
+                Let's chat
+              </button>
+              <button
+                onClick={() => chatRespond(n.eventId, "RefuseChatRequest")}
+              >
+                Refuse
+              </button>
+            </>
+          )}
         </div>
       ))}
       <SearchUsers friendRequestOnclick={(userId) => friendRequest(userId)} />
@@ -124,11 +196,15 @@ function Home() {
       {/* Friend List */}
       <h4>Friends</h4>
       {Friends.map((f) => (
-        <div key={f.username}>{f.username}</div>
+        <div key={f.username}>
+          {f.username}/
+          <button onClick={() => requestChat(f.userId)}>Request Chat</button>
+        </div>
       ))}
 
       {/* Chat Sections */}
       <h4>Chat</h4>
+      <Outlet />
     </div>
   );
 }

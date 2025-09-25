@@ -4,6 +4,7 @@ import Login from "../pages/auth/login/Login";
 import MainLayout from "../layouts/MainLayout";
 import Register from "../pages/auth/login/Register";
 import Home from "../pages/main/home/Home";
+import Chat from "../pages/main/home/Chat";
 
 function RouterProvider() {
   return (
@@ -17,7 +18,9 @@ function RouterProvider() {
 
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Navigate to="home" replace />} />
-          <Route path="home" element={<Home />} />
+          <Route path="home" element={<Home />}>
+            <Route path=":id" element={<Chat />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<div>Page not found</div>} />

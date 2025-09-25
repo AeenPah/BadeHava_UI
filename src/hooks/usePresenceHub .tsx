@@ -1,24 +1,27 @@
 import { HubConnectionBuilder, type HubConnection } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
+import { getCookie } from "../utils/cookiesManagement";
 
-function usePresenceHub(queryParams: string): HubConnection | null {
-  const baseURL = import.meta.env.VITE_API_URL + "/presenceHub";
+function usePresenceHub(): HubConnection | null {
+  const accessToken = getCookie("accessToken");
+  const url =
+    import.meta.env.VITE_API_URL +
+    "/presenceHub" +
+    `?accessToken=${accessToken}`;
 
   const [con, setCon] = useState<HubConnection | null>(null);
 
   useEffect(() => {
-    // if (connection.current) return;
-
-    const connection = new HubConnectionBuilder()
-      .withUrl(baseURL + queryParams)
-      .build();
+    const connection = new HubConnectionBuilder().withUrl(url).build();
 
     connection.onclose((err) => console.log("Socket disconnected: ", err));
 
-    setCon(connection);
-
     connection
-      ?.start()
+      .start()
+      .then(() => {
+        console.log("SignalR Connected");
+        setCon(connection);
+      })
       .catch((err) => console.error("Connection error: ", err));
 
     return () => {
