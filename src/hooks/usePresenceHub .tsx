@@ -38,7 +38,7 @@ function usePresenceHub(handlers: THubEventHandler[]): HubConnection | null {
     return () => {
       connection?.stop();
     };
-  }, [url, handlers]);
+  }, []);
 
   return con;
 }
