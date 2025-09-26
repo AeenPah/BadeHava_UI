@@ -1,9 +1,11 @@
 import { getCookie, setCookie } from "../../../utils/cookiesManagement";
 import SearchUsers from "../../../components/SearchUsers";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import AXIOS from "../../../lib/AxiosInstance";
-import usePresenceHub from "../../../hooks/usePresenceHub ";
-import { Outlet, useNavigate } from "react-router-dom";
+import usePresenceHub, {
+  type THubEventHandler,
+} from "../../../hooks/usePresenceHub ";
+import { useSearchParams } from "react-router-dom";
 
 type TNotification = {
   eventId: number;
@@ -18,6 +20,8 @@ type TFriend = {
   createAt: Date;
 };
 
+type TMessage = { from: number; message: string; seen: boolean };
+
 const EVENT = ["FriendRequest", "Block", "ChatRequest"];
 
 function Home() {
@@ -25,7 +29,7 @@ function Home() {
   /*                              React Router Dom                              */
   /* -------------------------------------------------------------------------- */
 
-  const navigation = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   /* -------------------------------------------------------------------------- */
   /*                                 React Hooks                                */
@@ -33,6 +37,9 @@ function Home() {
 
   const [notifications, setNotification] = useState<TNotification[]>([]);
   const [Friends, setFriends] = useState<TFriend[]>([]);
+
+  const [chatMessage, setChatMessage] = useState<string>("");
+  const [chatMessages, setChatMessages] = useState<TMessage[]>([]);
 
   useEffect(() => {
     getEvents();
@@ -51,24 +58,43 @@ function Home() {
   /*                               usePresenceHub                               */
   /* -------------------------------------------------------------------------- */
 
-  const presenceHub = usePresenceHub();
-
-  useEffect(() => {
-    presenceHub?.on("FailedRequest", (_, message) => alert(message));
-    presenceHub?.on("RequestSent", (_, data) => {
-      alert(data.message);
-      navigation(data.roomId);
-    });
-    presenceHub?.on("ChatRequest", (_, message) => {
-      alert(JSON.stringify(message));
-      getEvents();
-    });
-    presenceHub?.on("ChatReqRefused", (_, message) => alert(message));
-    presenceHub?.on("JoinedRoom", (roomId) => {
-      console.log(roomId);
-      navigation(roomId);
-    });
-  }, [navigation, presenceHub]);
+  const listeners: THubEventHandler[] = [
+    {
+      event: "FailedRequest",
+      handler: (msg) => alert(msg),
+    },
+    {
+      event: "RequestSent",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      handler: (data: any) => {
+        alert(data.message);
+        setSearchParams({ room: data.roomId });
+      },
+    },
+    {
+      event: "ChatRequest",
+      handler: (message) => {
+        alert(JSON.stringify(message));
+        getEvents();
+      },
+    },
+    {
+      event: "ChatReqRefused",
+      handler: (msg) => alert(msg),
+    },
+    {
+      event: "JoinedRoom",
+      handler: (roomId) => setSearchParams({ room: `${roomId}` }),
+    },
+    {
+      event: "Message",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      handler: (data: any) => {
+        setChatMessages((prev) => [{ ...data, seen: true }, ...prev]);
+      },
+    },
+  ];
+  const presenceHub = usePresenceHub(listeners);
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
@@ -151,6 +177,13 @@ function Home() {
     }
   }
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>, roomId: string) {
+    event.preventDefault();
+    if (!chatMessage.trim()) return;
+    presenceHub?.invoke("SendMessage", roomId, chatMessage);
+    setChatMessage("");
+  }
+
   return (
     <div style={{ backgroundColor: "lightblue" }}>
       <h4>Home</h4>
@@ -204,7 +237,29 @@ function Home() {
 
       {/* Chat Sections */}
       <h4>Chat</h4>
-      <Outlet />
+      {presenceHub && searchParams.get("room") && (
+        <div>
+          Chat
+          <h4>Messages</h4>
+          {chatMessages.map((m) => (
+            <>
+              {m.message} // FROM:{m.from} <br />
+            </>
+          ))}
+          <form onSubmit={(e) => handleSubmit(e, searchParams.get("room")!)}>
+            <input
+              type="text"
+              name="message"
+              id="message"
+              value={chatMessage}
+              autoComplete="off"
+              onChange={(e) => setChatMessage(e.target.value)}
+            />
+            <button>send</button>
+          </form>
+          <h4> chat room: {searchParams.get("room")}</h4>
+        </div>
+      )}
     </div>
   );
 }

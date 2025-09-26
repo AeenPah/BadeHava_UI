@@ -2,7 +2,13 @@ import { HubConnectionBuilder, type HubConnection } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
 import { getCookie } from "../utils/cookiesManagement";
 
-function usePresenceHub(): HubConnection | null {
+export type THubEventHandler = {
+  event: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handler: (data: any) => void;
+};
+
+function usePresenceHub(handlers: THubEventHandler[]): HubConnection | null {
   const accessToken = getCookie("accessToken");
   const url =
     import.meta.env.VITE_API_URL +
@@ -21,13 +27,18 @@ function usePresenceHub(): HubConnection | null {
       .then(() => {
         console.log("SignalR Connected");
         setCon(connection);
+
+        handlers.forEach(({ handler, event }) => {
+          connection.off(event);
+          connection.on(event, handler);
+        });
       })
       .catch((err) => console.error("Connection error: ", err));
 
     return () => {
       connection?.stop();
     };
-  }, []);
+  }, [url, handlers]);
 
   return con;
 }
