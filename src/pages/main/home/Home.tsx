@@ -1,14 +1,7 @@
-import { getCookie } from "../../../utils/cookiesManagement";
 import { useEffect, useState, type FormEvent } from "react";
-import AXIOS from "../../../lib/AxiosInstance";
 import { useSearchParams } from "react-router-dom";
 import useHub from "@/hooks/useHub";
-
-type TFriend = {
-  userId: number;
-  username: string;
-  createAt: Date;
-};
+import FriendsList from "@/components/FriendsList";
 
 type TMessage = { from: number; message: string; seen: boolean };
 
@@ -47,29 +40,12 @@ function Home() {
   /*                                 React Hooks                                */
   /* -------------------------------------------------------------------------- */
 
-  const [Friends, setFriends] = useState<TFriend[]>([]);
-
   const [chatMessage, setChatMessage] = useState<string>("");
   const [chatMessages, setChatMessages] = useState<TMessage[]>([]);
-
-  useEffect(() => {
-    AXIOS.get("user/friends/", {
-      headers: {
-        Authorization: `Bearer ${getCookie("accessToken")}`,
-      },
-    }).then((res) => {
-      setFriends(res.data.data);
-    });
-    return () => {};
-  }, []);
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
-
-  function requestChat(userId: number) {
-    hubConnection?.invoke("RequestChat", userId.toString());
-  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>, roomId: string) {
     event.preventDefault();
@@ -84,13 +60,7 @@ function Home() {
       className="h-full rounded-t-2xl pt-4 px-2"
     >
       {/* Friend List */}
-      <h4>Friends</h4>
-      {Friends.map((f) => (
-        <div key={f.username}>
-          {f.username}/
-          <button onClick={() => requestChat(f.userId)}>Request Chat</button>
-        </div>
-      ))}
+      <FriendsList />
 
       {/* Chat Sections */}
       <h4>Chat</h4>
