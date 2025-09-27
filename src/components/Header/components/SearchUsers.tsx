@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useRef, useState, type ChangeEvent } from "react";
-import { getCookie } from "../utils/cookiesManagement";
-import AXIOS from "../lib/AxiosInstance";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { getCookie } from "../../../utils/cookiesManagement";
+import AXIOS from "../../../lib/AxiosInstance";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 
 type TUserType = { userId: number; username: string };
 

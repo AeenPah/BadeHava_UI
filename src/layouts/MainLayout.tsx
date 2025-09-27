@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { getCookie } from "../utils/cookiesManagement";
 import HubProvider from "@/providers/HubContextProvider";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 
 function MainLayout() {
   /* -------------------------------------------------------------------------- */
