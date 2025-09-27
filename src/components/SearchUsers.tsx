@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useRef, useState, type ChangeEvent } from "react";
 import { getCookie } from "../utils/cookiesManagement";
 import AXIOS from "../lib/AxiosInstance";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 type TUserType = { userId: number; username: string };
 
@@ -16,7 +18,7 @@ function SearchUsers({
   const [searchInput, setSearchInput] = useState<string | null>(null);
   const [foundUsers, setFoundUsers] = useState<TUserType[] | null>(null);
 
-  const searchRef = useRef<number | null>(null);
+  const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (searchRef.current) {
@@ -56,22 +58,31 @@ function SearchUsers({
 
   return (
     <Fragment>
-      <input
+      <Input
         type="text"
+        placeholder="Search"
         name="searchUser"
         id="searchUser"
-        placeholder="Search Users ..."
         onChange={(e) => searchOnChange(e)}
       />
-      {foundUsers &&
-        foundUsers.map((u) => (
-          <div key={u.username}>
-            {u.userId}- {u.username}
-            <button onClick={() => friendRequestOnclick(u.userId)}>
-              + Friend Request
-            </button>
-          </div>
-        ))}
+      <div className="mt-3 flex-1 overflow-y-auto">
+        {foundUsers &&
+          foundUsers.map((u) => (
+            <div
+              key={u.username}
+              className="flex items-center justify-between p-2 border-b"
+            >
+              <span>
+                {u.userId}- {u.username}
+              </span>
+              {u.userId !== 0 && (
+                <Button onClick={() => friendRequestOnclick(u.userId)}>
+                  + Friend Request
+                </Button>
+              )}
+            </div>
+          ))}
+      </div>
     </Fragment>
   );
 }

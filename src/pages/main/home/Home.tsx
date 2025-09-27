@@ -1,5 +1,4 @@
 import { getCookie } from "../../../utils/cookiesManagement";
-import SearchUsers from "../../../components/SearchUsers";
 import { useEffect, useState, type FormEvent } from "react";
 import AXIOS from "../../../lib/AxiosInstance";
 import { useSearchParams } from "react-router-dom";
@@ -68,17 +67,6 @@ function Home() {
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
 
-  function friendRequest(userId: number) {
-    const data = {
-      receiverUserId: userId.toString(),
-    };
-    AXIOS.post("event/friend-request", data, {
-      headers: {
-        Authorization: `Bearer ${getCookie("accessToken")}`,
-      },
-    }).then((res) => alert(res.data.data));
-  }
-
   function requestChat(userId: number) {
     hubConnection?.invoke("RequestChat", userId.toString());
   }
@@ -95,10 +83,6 @@ function Home() {
       style={{ backgroundColor: "lightblue" }}
       className="h-full rounded-t-2xl pt-4 px-2"
     >
-      {/* Notifications */}
-
-      <SearchUsers friendRequestOnclick={(userId) => friendRequest(userId)} />
-
       {/* Friend List */}
       <h4>Friends</h4>
       {Friends.map((f) => (
