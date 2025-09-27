@@ -1,7 +1,7 @@
 import useHub from "@/hooks/useHub";
 import AXIOS from "@/lib/AxiosInstance";
 import { getCookie } from "@/utils/cookiesManagement";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
@@ -44,8 +44,9 @@ function FriendsList() {
   }
 
   return (
-    <Fragment>
-      <h4>Friends</h4>
+    <div className="overflow-x-auto scrollbar-hide">
+      <h4 className="sticky left-0">Friends</h4>
+
       <div className="flex gap-3">
         {Friends.map((f) => (
           <div className="flex items-center gap-2">
@@ -68,7 +69,7 @@ function FriendsList() {
           </div>
         ))}
       </div>
-    </Fragment>
+    </div>
   );
 }
 
