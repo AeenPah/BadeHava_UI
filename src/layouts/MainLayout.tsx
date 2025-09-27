@@ -25,7 +25,7 @@ function MainLayout() {
 
   return (
     <HubProvider>
-      <div style={{ backgroundColor: "lightcoral" }} className="h-dvh">
+      <div className="h-dvh">
         <Header />
         <Outlet />
       </div>

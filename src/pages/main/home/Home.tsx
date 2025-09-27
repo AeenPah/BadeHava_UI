@@ -2,8 +2,9 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 import useHub from "@/hooks/useHub";
 import FriendsList from "@/components/FriendsList";
+import Chat from "@/components/Chat";
 
-type TMessage = { from: number; message: string; seen: boolean };
+export type TMessage = { from: number; message: string; seen: boolean };
 
 function Home() {
   /* -------------------------------------------------------------------------- */
@@ -30,9 +31,13 @@ function Home() {
       setSearchParams({ room: data.roomId });
     });
 
-    hubConnection?.on("Message", (data) =>
-      setChatMessages((prev) => [{ ...data, seen: true }, ...prev])
-    );
+    hubConnection?.on("Message", (userId, data) => {
+      console.log(userId, data);
+      setChatMessages((prev) => [
+        { from: userId, message: data, seen: true },
+        ...prev,
+      ]);
+    });
     return () => {};
   }, [hubConnection]);
 
@@ -40,52 +45,34 @@ function Home() {
   /*                                 React Hooks                                */
   /* -------------------------------------------------------------------------- */
 
-  const [chatMessage, setChatMessage] = useState<string>("");
   const [chatMessages, setChatMessages] = useState<TMessage[]>([]);
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>, roomId: string) {
+  function handleSubmit(
+    event: FormEvent<HTMLFormElement>,
+    roomId: string,
+    chatMessage: string
+  ) {
     event.preventDefault();
-    if (!chatMessage.trim()) return;
+
     hubConnection?.invoke("SendMessage", roomId, chatMessage);
-    setChatMessage("");
   }
 
   return (
-    <div
-      style={{ backgroundColor: "lightblue" }}
-      className="h-full rounded-t-2xl pt-4 px-2"
-    >
+    <div className="bg-secondary h-full rounded-t-2xl pt-4 px-2">
       {/* Friend List */}
       <FriendsList />
 
       {/* Chat Sections */}
-      <h4>Chat</h4>
       {hubConnection && searchParams.get("room") && (
-        <div>
-          Chat
-          <h4>Messages</h4>
-          {chatMessages.map((m) => (
-            <>
-              {m.message} // FROM:{m.from} <br />
-            </>
-          ))}
-          <form onSubmit={(e) => handleSubmit(e, searchParams.get("room")!)}>
-            <input
-              type="text"
-              name="message"
-              id="message"
-              value={chatMessage}
-              autoComplete="off"
-              onChange={(e) => setChatMessage(e.target.value)}
-            />
-            <button>send</button>
-          </form>
-          <h4> chat room: {searchParams.get("room")}</h4>
-        </div>
+        <Chat
+          chatMessages={chatMessages}
+          handleSubmit={handleSubmit}
+          chatRoom={searchParams.get("room")!}
+        />
       )}
     </div>
   );
