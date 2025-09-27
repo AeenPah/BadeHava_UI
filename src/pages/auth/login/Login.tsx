@@ -1,6 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AXIOS from "../../../lib/AxiosInstance";
 import { setCookie } from "../../../utils/cookiesManagement";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 function Login() {
   /* -------------------------------------------------------------------------- */
@@ -41,31 +43,29 @@ function Login() {
   }
 
   return (
-    <div>
-      <h3>Login</h3>
-
-      <form onSubmit={onSubmit}>
-        <label htmlFor="username"> Username: </label>
-        <input
+    <form onSubmit={onSubmit}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="username"> Username </label>
+        <Input
           type="text"
           name="username"
           id="username"
           autoComplete="username"
         />
 
-        <label htmlFor="password"> Password: </label>
-        <input
+        <label htmlFor="password"> Password </label>
+        <Input
           type="password"
           name="password"
           id="password"
           autoComplete="current-password"
         />
 
-        <input type="submit" value="Submit" />
-      </form>
-
-      <Link to="/auth/register">Register here!</Link>
-    </div>
+        <Button type="submit" className="w-full mt-4">
+          Login
+        </Button>
+      </div>
+    </form>
   );
 }
 

@@ -1,5 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AXIOS from "../../../lib/AxiosInstance";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 function Register() {
   /* -------------------------------------------------------------------------- */
@@ -35,31 +37,29 @@ function Register() {
   }
 
   return (
-    <div>
-      <h3>Register</h3>
-
-      <form onSubmit={onSubmit}>
-        <label htmlFor="username"> Username: </label>
-        <input
+    <form onSubmit={onSubmit}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="username"> Username </label>
+        <Input
           type="text"
           name="username"
           id="username"
           autoComplete="username"
         />
 
-        <label htmlFor="password"> Password: </label>
-        <input
+        <label htmlFor="password"> Password </label>
+        <Input
           type="password"
           name="password"
           id="password"
           autoComplete="current-password"
         />
 
-        <input type="submit" value="Submit" />
-      </form>
-
-      <Link to="/auth/login">Back to login!</Link>
-    </div>
+        <Button type="submit" className="w-full mt-4">
+          Register
+        </Button>
+      </div>
+    </form>
   );
 }
 
