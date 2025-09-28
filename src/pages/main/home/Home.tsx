@@ -14,6 +14,12 @@ function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   /* -------------------------------------------------------------------------- */
+  /*                                 React Hooks                                */
+  /* -------------------------------------------------------------------------- */
+
+  const [chatMessages, setChatMessages] = useState<TMessage[]>([]);
+
+  /* -------------------------------------------------------------------------- */
   /*                                   useHub                                   */
   /* -------------------------------------------------------------------------- */
 
@@ -26,26 +32,26 @@ function Home() {
     hubConnection?.on("JoinedRoom", (roomId) =>
       setSearchParams({ room: `${roomId}` })
     );
-    hubConnection?.on("RequestSent", (data) => {
+    hubConnection?.on("RequestSent", (_, data) => {
+      console.log(data);
       alert(data.message);
       setSearchParams({ room: data.roomId });
     });
 
     hubConnection?.on("Message", (userId, data) => {
-      console.log(userId, data);
       setChatMessages((prev) => [
         { from: userId, message: data, seen: true },
         ...prev,
       ]);
     });
+    hubConnection?.on("My-Message", (message) => {
+      setChatMessages((prev) => [
+        { from: 0, message: message, seen: false },
+        ...prev,
+      ]);
+    });
     return () => {};
   }, [hubConnection]);
-
-  /* -------------------------------------------------------------------------- */
-  /*                                 React Hooks                                */
-  /* -------------------------------------------------------------------------- */
-
-  const [chatMessages, setChatMessages] = useState<TMessage[]>([]);
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */

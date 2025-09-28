@@ -9,8 +9,9 @@ import AXIOS from "@/lib/AxiosInstance";
 import { getCookie } from "@/utils/cookiesManagement";
 import { BellIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import NotificationItem from "./NotificationItem";
 
-type TNotification = {
+export type TNotification = {
   eventId: number;
   type: number;
   sender: string;
@@ -97,38 +98,13 @@ function NotificationPopover() {
       </PopoverTrigger>
       <PopoverContent>
         {notifications.map((n, i) => (
-          <div key={i} style={{ border: "1px solid black" }}>
-            {EVENT[n.type]} from
-            <span style={{ fontWeight: "bold" }}> {n.sender}</span>
-            at <i>{n.eventTime}</i>
-            <br />
-            {n.type === 0 ? (
-              <>
-                <button
-                  onClick={() => responseFriendRequest(n.eventId, "Accept")}
-                >
-                  Accept
-                </button>
-                <button
-                  onClick={() => responseFriendRequest(n.eventId, "Decline")}
-                >
-                  Decline
-                </button>
-              </>
-            ) : (
-              <>
-                <button onClick={() => chatRespond(n.eventId, "JoinChat")}>
-                  Let's chat
-                </button>
-                <button
-                  onClick={() => chatRespond(n.eventId, "RefuseChatRequest")}
-                >
-                  Refuse
-                </button>
-              </>
-            )}
-            <hr />
-          </div>
+          <NotificationItem
+            key={i}
+            notification={n}
+            onFriendRespond={responseFriendRequest}
+            onChatRespond={chatRespond}
+            labelMap={EVENT}
+          />
         ))}
       </PopoverContent>
     </Popover>

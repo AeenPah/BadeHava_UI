@@ -28,11 +28,12 @@ function Chat({
       <h4>Chat room: {chatRoom}</h4>
       <h4>Messages</h4>
 
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5 m-2">
         {chatMessages.map((m) => (
-          <div className="flex gap-1">
-            <span>{m.from}</span>
-            {m.message}
+          <div className={`flex gap-1 ${m.from == 0 ? "justify-end" : ""}`}>
+            <div className="bg-gray-500 text-black px-1.5 rounded-[8px]">
+              {m.message}
+            </div>
           </div>
         ))}
       </div>
