@@ -49,7 +49,7 @@ function FriendsList() {
 
       <div className="flex gap-3">
         {Friends.map((f) => (
-          <div className="flex items-center gap-2">
+          <div key={f.username} className="flex items-center gap-2">
             <div className="flex items-center gap-0.5">
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" />

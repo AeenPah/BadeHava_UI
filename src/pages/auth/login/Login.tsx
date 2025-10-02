@@ -27,16 +27,15 @@ function Login() {
     if (username && password) {
       const data = { username, password };
 
-      const result = AXIOS.post("/auth/login", data, {
+      AXIOS.post("/auth/login", data, {
         withCredentials: true,
       }).then(({ data }) => {
         setCookie("accessToken", data.data.accessToken);
         setCookie("username", data.data.username);
+        setCookie("avatar", data.data.avatarUrl || "");
         confirm(data.message);
         navigate("/home", { replace: true });
       });
-
-      console.log(result);
     } else {
       alert("Fill the form");
     }

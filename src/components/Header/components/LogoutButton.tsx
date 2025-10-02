@@ -18,6 +18,7 @@ function LogoutButton() {
     }).then(() => {
       setCookie("accessToken", "", -1);
       setCookie("username", "", -1);
+      setCookie("avatar", "", -1);
       window.location.reload();
     });
   }

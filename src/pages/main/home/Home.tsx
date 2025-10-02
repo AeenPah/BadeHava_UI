@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import useHub from "@/hooks/useHub";
 import FriendsList from "@/components/FriendsList";
 import Chat from "@/components/Chat";
+import AvatarDialog from "@/components/AvatarDialog";
 
 export type TMessage = { from: number; message: string; seen: boolean };
 
@@ -69,6 +70,9 @@ function Home() {
 
   return (
     <div className="row-start-2 row-end-9 bg-secondary  rounded-t-2xl pt-4 px-2 flex flex-col gap-2.5">
+      {/* Avatar Picker */}
+      <AvatarDialog />
+
       {/* Friend List */}
       <FriendsList />
 
