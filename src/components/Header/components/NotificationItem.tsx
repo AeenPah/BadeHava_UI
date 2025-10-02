@@ -55,7 +55,7 @@ function NotificationItem({
         ];
 
   return (
-    <div className="mb-2">
+    <div className="mb-2 flex flex-col gap-1.5">
       <div className="flex items-center gap-2">
         <Avatar className="size-7">
           <AvatarImage src="https://github.com/shadcn.png" />

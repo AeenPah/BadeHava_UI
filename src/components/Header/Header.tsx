@@ -5,7 +5,7 @@ import LogoutButton from "./components/LogoutButton";
 
 function Header() {
   return (
-    <div className="flex justify-between py-2 px-1">
+    <div className="row-span-1 flex justify-between py-2 px-1">
       <UserInfo />
       <div className="flex items-center gap-1.5">
         {/* Search Users */}

@@ -40,14 +40,14 @@ function Home() {
 
     hubConnection?.on("Message", (userId, data) => {
       setChatMessages((prev) => [
-        { from: userId, message: data, seen: true },
         ...prev,
+        { from: userId, message: data, seen: true },
       ]);
     });
     hubConnection?.on("My-Message", (message) => {
       setChatMessages((prev) => [
-        { from: 0, message: message, seen: false },
         ...prev,
+        { from: 0, message: message, seen: false },
       ]);
     });
     return () => {};
@@ -68,7 +68,7 @@ function Home() {
   }
 
   return (
-    <div className="bg-secondary h-full rounded-t-2xl pt-4 px-2">
+    <div className="row-start-2 row-end-9 bg-secondary  rounded-t-2xl pt-4 px-2 flex flex-col gap-2.5">
       {/* Friend List */}
       <FriendsList />
 

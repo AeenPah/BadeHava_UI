@@ -97,15 +97,19 @@ function NotificationPopover() {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        {notifications.map((n, i) => (
-          <NotificationItem
-            key={i}
-            notification={n}
-            onFriendRespond={responseFriendRequest}
-            onChatRespond={chatRespond}
-            labelMap={EVENT}
-          />
-        ))}
+        {notifications.length === 0 ? (
+          <div>There is no Notifications!</div>
+        ) : (
+          notifications.map((n, i) => (
+            <NotificationItem
+              key={i}
+              notification={n}
+              onFriendRespond={responseFriendRequest}
+              onChatRespond={chatRespond}
+              labelMap={EVENT}
+            />
+          ))
+        )}
       </PopoverContent>
     </Popover>
   );

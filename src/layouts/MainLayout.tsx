@@ -25,7 +25,7 @@ function MainLayout() {
 
   return (
     <HubProvider>
-      <div className="h-dvh">
+      <div className="h-dvh grid grid-rows-8">
         <Header />
         <Outlet />
       </div>
