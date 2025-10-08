@@ -78,11 +78,11 @@ function NotificationPopover() {
 
   function chatRespond(
     eventId: number,
-    type: "JoinChat" | "RefuseChatRequest"
+    type: "AcceptChatRequest" | "RefuseChatRequest"
   ) {
     switch (type) {
-      case "JoinChat":
-        hubConnection?.invoke("JoinChat", eventId);
+      case "AcceptChatRequest":
+        hubConnection?.invoke("AcceptChatRequest", eventId);
         break;
       case "RefuseChatRequest":
         hubConnection?.invoke("RefuseChatRequest", eventId);

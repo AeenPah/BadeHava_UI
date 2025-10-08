@@ -7,6 +7,26 @@ import AvatarDialog from "@/components/AvatarDialog";
 
 export type TMessage = { from: number; message: string; seen: boolean };
 
+type THubResponse<T = null> = {
+  success: boolean;
+  message: string;
+  data: T;
+};
+type TChatUser = {
+  userId: string;
+  username: string;
+  userAvatarUrl?: string;
+};
+type TChatRoom = {
+  roomId: string;
+  roomsUsers: TChatUser[];
+};
+type TChatMessage = {
+  message: string;
+  from: number;
+  seen: boolean;
+};
+
 function Home() {
   /* -------------------------------------------------------------------------- */
   /*                              React Router Dom                              */
@@ -15,51 +35,83 @@ function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   /* -------------------------------------------------------------------------- */
+  /*                                   useHub                                   */
+  /* -------------------------------------------------------------------------- */
+
+  const { hubConnection } = useHub();
+
+  /* -------------------------------------------------------------------------- */
   /*                                 React Hooks                                */
   /* -------------------------------------------------------------------------- */
 
   const [chatMessages, setChatMessages] = useState<TMessage[]>([]);
 
   useEffect(() => {
-    const roomId = searchParams.get("room");
-    if (roomId) {
-      // Try to join group or something and get data
-    }
-  }, [searchParams]);
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   useHub                                   */
-  /* -------------------------------------------------------------------------- */
-
-  const { hubConnection } = useHub();
-
-  useEffect(() => {
-    hubConnection?.on("FailedRequest", (_, msg) => alert(msg));
-    hubConnection?.on("ChatReqRefused", (msg) => alert(msg));
-    hubConnection?.on("ChatRequest", (msg) => JSON.stringify(msg));
-    hubConnection?.on("JoinedRoom", (roomId) =>
-      setSearchParams({ room: `${roomId}` })
+    /* --------------------------------- Failed --------------------------------- */
+    hubConnection?.on("FailedRequest", (res: THubResponse) =>
+      alert(res.message)
     );
-    hubConnection?.on("RequestSent", (_, data) => {
-      console.log(data);
-      alert(data.message);
-      setSearchParams({ room: data.roomId });
+
+    /* ------------------------------ Chat Requests ----------------------------- */
+    hubConnection?.on("ChatRequest", (res: THubResponse<TChatUser>) => {
+      // TODO: show the sender username and avatar
+      alert(res.message);
+    });
+    hubConnection?.on("RequestSent", (res: THubResponse) => {
+      alert(res.message);
+      // setSearchParams({ room: data.roomId });
+    });
+    hubConnection?.on("ChatReqRefused", (res: THubResponse) =>
+      alert(res.message)
+    );
+    hubConnection?.on("ChatReqRefusedBy", (res: THubResponse<TChatUser>) =>
+      // TODO: show the sender username and avatar
+      alert(res.message)
+    );
+    hubConnection?.on(
+      "UserAcceptChatRequest",
+      (res: THubResponse<TChatRoom>) => {
+        // TODO: show the sender username and avatar
+        alert(res.message);
+        setSearchParams({ room: `${res.data.roomId}` });
+      }
+    );
+    hubConnection?.on("JoinedRoom", (res: THubResponse<TChatRoom>) => {
+      // TODO: show the sender username and avatar
+      alert(res.message);
+      setSearchParams({ room: `${res.data.roomId}` });
     });
 
-    hubConnection?.on("Message", (userId, data) => {
+    /* ----------------------------- Join Chat Room ----------------------------- */
+    hubConnection?.on("JoinedChatRoom", (res: THubResponse<TChatUser[]>) => {
+      // TODO: show the sender username and avatar
+      alert(res.message);
+    });
+
+    /* -------------------------------- Messages -------------------------------- */
+    hubConnection?.on("Message", (res: THubResponse<TChatMessage>) => {
       setChatMessages((prev) => [
         ...prev,
-        { from: userId, message: data, seen: true },
+        { from: res.data.from, message: res.data.message, seen: false },
       ]);
     });
-    hubConnection?.on("My-Message", (message) => {
+    hubConnection?.on("My-Message", (res: THubResponse<TChatMessage>) => {
       setChatMessages((prev) => [
         ...prev,
-        { from: 0, message: message, seen: false },
+        { from: 0, message: res.data.message, seen: false },
       ]);
     });
     return () => {};
   }, [hubConnection]);
+
+  useEffect(() => {
+    const roomId = searchParams.get("room");
+    if (roomId && hubConnection) {
+      console.log({ roomId });
+      // Try to join group or something and get data
+      hubConnection?.invoke("JoinChatRoom", roomId);
+    }
+  }, [searchParams, hubConnection]);
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */

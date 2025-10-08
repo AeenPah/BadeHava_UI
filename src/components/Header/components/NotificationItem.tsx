@@ -7,7 +7,7 @@ type Props = {
   onFriendRespond: (eventId: number, action: "Accept" | "Decline") => void;
   onChatRespond: (
     eventId: number,
-    action: "JoinChat" | "RefuseChatRequest"
+    action: "AcceptChatRequest" | "RefuseChatRequest"
   ) => void;
   labelMap: Record<number, string>;
 };
@@ -46,7 +46,7 @@ function NotificationItem({
       : [
           {
             label: "Let's chat",
-            onClick: () => onChatRespond(eventId, "JoinChat"),
+            onClick: () => onChatRespond(eventId, "AcceptChatRequest"),
           },
           {
             label: "Refuse",

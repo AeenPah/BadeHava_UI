@@ -39,7 +39,7 @@ function Chat({
         <h4>Chat room: {chatRoom}</h4>
       </div>
 
-      <div className="grow flex flex-col gap-1.5 m-2 relative">
+      <div className="grow flex flex-col gap-1.5 m-2 relative overflow-auto">
         {chatMessages.length === 0 ? (
           <h4 className="text-center justify-self-center m-auto">
             No messages yet!
