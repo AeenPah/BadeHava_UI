@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 type TFriend = {
   userId: number;
   username: string;
+  avatarPicUrl?: string;
   createAt: Date;
 };
 
@@ -22,7 +23,7 @@ function FriendsList() {
   /*                                 React Hooks                                */
   /* -------------------------------------------------------------------------- */
 
-  const [Friends, setFriends] = useState<TFriend[]>([]);
+  const [friends, setFriends] = useState<TFriend[]>([]);
 
   useEffect(() => {
     AXIOS.get("user/friends/", {
@@ -48,11 +49,11 @@ function FriendsList() {
       <h4 className="sticky left-0">Friends</h4>
 
       <div className="flex gap-3">
-        {Friends.map((f) => (
+        {friends.map((f) => (
           <div key={f.username} className="flex items-center gap-2">
             <div className="flex items-center gap-0.5">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src={f.avatarPicUrl} />
                 <AvatarFallback>
                   {f.username?.slice(0, 2).toUpperCase()}
                 </AvatarFallback>

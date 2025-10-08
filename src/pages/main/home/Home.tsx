@@ -20,6 +20,13 @@ function Home() {
 
   const [chatMessages, setChatMessages] = useState<TMessage[]>([]);
 
+  useEffect(() => {
+    const roomId = searchParams.get("room");
+    if (roomId) {
+      // Try to join group or something and get data
+    }
+  }, [searchParams]);
+
   /* -------------------------------------------------------------------------- */
   /*                                   useHub                                   */
   /* -------------------------------------------------------------------------- */
@@ -79,6 +86,10 @@ function Home() {
       {/* Chat Sections */}
       {hubConnection && searchParams.get("room") && (
         <Chat
+          user={{
+            avatarUrl: "",
+            username: "",
+          }}
           chatMessages={chatMessages}
           handleSubmit={handleSubmit}
           chatRoom={searchParams.get("room")!}

@@ -3,8 +3,13 @@ import { getCookie } from "../../../utils/cookiesManagement";
 import AXIOS from "../../../lib/AxiosInstance";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-type TUserType = { userId: number; username: string };
+type TUserType = {
+  userId: number;
+  username: string;
+  avatarPicUrl?: string;
+};
 
 function SearchUsers({
   friendRequestOnclick,
@@ -72,6 +77,13 @@ function SearchUsers({
               key={u.username}
               className="flex items-center justify-between p-2 border-b"
             >
+              <Avatar className="size-12">
+                <AvatarImage src={u.avatarPicUrl} />
+                <AvatarFallback>
+                  {u?.username.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+
               <span>
                 {u.userId}- {u.username}
               </span>

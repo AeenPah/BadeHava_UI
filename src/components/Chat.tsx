@@ -6,10 +6,12 @@ import { SendIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 function Chat({
+  user,
   chatMessages,
   chatRoom,
   handleSubmit,
 }: {
+  user: { username: string; avatarUrl: string | null };
   chatMessages: TMessage[];
   chatRoom: string;
   handleSubmit: (
@@ -28,9 +30,12 @@ function Chat({
     <div className="border-2 h-full rounded-t-lg flex flex-col mb-5">
       <div className="bg-sidebar rounded-t-lg p-2 flex gap-2 items-center">
         <Avatar className="size-10">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback></AvatarFallback>
+          <AvatarImage src={user.avatarUrl || ""} />
+          <AvatarFallback>
+            {user.username.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
+        <span>{user.username}</span>
         <h4>Chat room: {chatRoom}</h4>
       </div>
 
