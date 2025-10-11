@@ -10,12 +10,8 @@ import { getCookie } from "@/utils/cookiesManagement";
 import { BellIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import NotificationItem from "./NotificationItem";
+import type { TUser } from "@/types/User";
 
-type TUser = {
-  username: string;
-  userId: number;
-  avatarPicUrl?: string;
-};
 export type TNotification = {
   eventId: number;
   eventType: number;

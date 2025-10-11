@@ -4,6 +4,7 @@ import useHub from "@/hooks/useHub";
 import FriendsList from "@/components/FriendsList";
 import Chat from "@/components/Chat";
 import AvatarDialog from "@/components/AvatarDialog";
+import type { TUser } from "@/types/User";
 
 export type TMessage = { from: number; message: string; seen: boolean };
 
@@ -45,6 +46,7 @@ function Home() {
   /* -------------------------------------------------------------------------- */
 
   const [chatMessages, setChatMessages] = useState<TMessage[]>([]);
+  const [chatUser, setChatUser] = useState<TUser | null>(null);
 
   useEffect(() => {
     /* --------------------------------- Failed --------------------------------- */
@@ -85,6 +87,12 @@ function Home() {
     /* ----------------------------- Join Chat Room ----------------------------- */
     hubConnection?.on("JoinedChatRoom", (res: THubResponse<TChatUser[]>) => {
       // TODO: show the sender username and avatar
+      const chatU: TUser = {
+        userId: +res.data[0].userId,
+        username: res.data[0].username,
+        avatarPicUrl: res.data[0].userAvatarUrl,
+      };
+      setChatUser(chatU);
       alert(res.message);
     });
 
@@ -136,12 +144,9 @@ function Home() {
       <FriendsList />
 
       {/* Chat Sections */}
-      {hubConnection && searchParams.get("room") && (
+      {hubConnection && chatUser && searchParams.get("room") && (
         <Chat
-          user={{
-            avatarUrl: "",
-            username: "",
-          }}
+          user={chatUser}
           chatMessages={chatMessages}
           handleSubmit={handleSubmit}
           chatRoom={searchParams.get("room")!}

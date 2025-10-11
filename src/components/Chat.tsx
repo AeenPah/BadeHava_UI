@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { ArrowLeftIcon, SendIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useSearchParams } from "react-router-dom";
+import type { TUser } from "@/types/User";
 
 function Chat({
   user,
@@ -12,7 +13,7 @@ function Chat({
   chatRoom,
   handleSubmit,
 }: {
-  user: { username: string; avatarUrl: string | null };
+  user: TUser;
   chatMessages: TMessage[];
   chatRoom: string;
   handleSubmit: (
@@ -38,7 +39,7 @@ function Chat({
       <div className="bg-sidebar flex justify-between rounded-t-lg p-2">
         <div className="flex gap-2 items-center">
           <Avatar className="size-10">
-            <AvatarImage src={user.avatarUrl || ""} />
+            <AvatarImage src={user.avatarPicUrl} />
             <AvatarFallback>
               {user.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
