@@ -99,8 +99,13 @@ function NotificationPopover() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="secondary" size="icon">
+        <Button className="relative" variant="secondary" size="icon">
           <BellIcon />
+          {notifications.length > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 rounded-full bg-red-400 text-white text-xs h-4 w-4 flex items-center justify-center">
+              {notifications.length}
+            </span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent>
