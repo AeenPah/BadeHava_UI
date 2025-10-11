@@ -43,11 +43,7 @@ function SearchUsers({
         },
         withCredentials: true,
       }).then(({ data }) => {
-        let users: TUserType[] = data.data.users;
-        if (!users.length) {
-          users = [{ userId: 0, username: "No User found!" }];
-        }
-
+        const users: TUserType[] = data.data.users;
         setFoundUsers(users);
       });
     }, 200);
@@ -72,27 +68,34 @@ function SearchUsers({
       />
       <div className="mt-3 flex-1 overflow-y-auto">
         {foundUsers &&
-          foundUsers.map((u) => (
-            <div
-              key={u.username}
-              className="flex items-center justify-between p-2 border-b"
-            >
-              <Avatar className="size-12">
-                <AvatarImage src={u.avatarPicUrl} />
-                <AvatarFallback>
-                  {u?.username.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+          (foundUsers.length !== 0 ? (
+            foundUsers.map((u) => (
+              <div
+                key={u.username}
+                className="flex items-center justify-between p-2 border-b"
+              >
+                <div className="flex items-center gap-2">
+                  <Avatar className="size-12">
+                    <AvatarImage src={u.avatarPicUrl} />
+                    <AvatarFallback>
+                      {u?.username.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
 
-              <span>
-                {u.userId}- {u.username}
-              </span>
-              {u.userId !== 0 && (
-                <Button onClick={() => friendRequestOnclick(u.userId)}>
-                  + Friend Request
-                </Button>
-              )}
-            </div>
+                  <span>{u.username}</span>
+                </div>
+                {u.userId !== 0 && (
+                  <Button
+                    size="sm"
+                    onClick={() => friendRequestOnclick(u.userId)}
+                  >
+                    + Friend Request
+                  </Button>
+                )}
+              </div>
+            ))
+          ) : (
+            <>No user found!</>
           ))}
       </div>
     </Fragment>
