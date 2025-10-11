@@ -81,6 +81,8 @@ function NotificationPopover() {
         Authorization: `Bearer ${getCookie("accessToken")}`,
       },
     }).then((res) => alert(res.data.message));
+
+    setNotification((prev) => prev.filter((p) => p.eventId !== eventId));
   }
 
   function chatRespond(
@@ -95,6 +97,7 @@ function NotificationPopover() {
         hubConnection?.invoke("RefuseChatRequest", eventId);
         break;
     }
+    setNotification((prev) => prev.filter((p) => p.eventId !== eventId));
   }
   return (
     <Popover>

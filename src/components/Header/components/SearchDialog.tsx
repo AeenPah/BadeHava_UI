@@ -18,7 +18,7 @@ function SearchDialog() {
       headers: {
         Authorization: `Bearer ${getCookie("accessToken")}`,
       },
-    }).then((res) => alert(res.data.data));
+    }).then((res) => alert(res.data.message));
   }
 
   return (
