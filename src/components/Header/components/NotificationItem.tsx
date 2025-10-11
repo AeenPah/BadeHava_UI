@@ -18,9 +18,9 @@ function NotificationItem({
   onChatRespond,
   labelMap,
 }: Props) {
-  const { eventId, type, sender, eventTime } = notification;
+  const { eventId, eventType, sender, createdAt } = notification;
 
-  const formattedDate = new Date(eventTime)
+  const formattedDate = new Date(createdAt)
     .toLocaleString("en-GB", {
       year: "numeric",
       month: "2-digit",
@@ -32,7 +32,7 @@ function NotificationItem({
     .replace(",", "");
 
   const actions =
-    type === 0
+    eventType === 0
       ? [
           {
             label: "Accept",
@@ -58,11 +58,13 @@ function NotificationItem({
     <div className="mb-2 flex flex-col gap-1.5">
       <div className="flex items-center gap-2">
         <Avatar className="size-7">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>{sender?.slice(0, 2).toUpperCase()}</AvatarFallback>
+          <AvatarImage src={sender.avatarPicUrl} />
+          <AvatarFallback>
+            {sender.username.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
-        <span className="font-bold">{sender}</span>
-        <span>{labelMap[type]}</span>
+        <span className="font-bold">{sender.username}</span>
+        <span>{labelMap[eventType]}</span>
       </div>
 
       <p className="text-xs text-gray-500">{formattedDate}</p>

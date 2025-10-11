@@ -11,11 +11,18 @@ import { BellIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import NotificationItem from "./NotificationItem";
 
+type TUser = {
+  username: string;
+  userId: number;
+  avatarPicUrl?: string;
+};
 export type TNotification = {
   eventId: number;
-  type: number;
-  sender: string;
-  eventTime: string;
+  eventType: number;
+  status: number;
+  sender: TUser;
+  seen: boolean;
+  createdAt: string;
 };
 
 const EVENT = ["FriendRequest", "Block", "ChatRequest"];
@@ -51,9 +58,9 @@ function NotificationPopover() {
       const tempNotifications: TNotification[] = res.data.data.map((n: any) => {
         return {
           eventId: n.eventId,
-          type: n.eventType,
-          sender: n.sender.username,
-          eventTime: n.createdAt,
+          eventType: n.eventType,
+          sender: n.sender,
+          createdAt: n.createdAt,
         };
       });
 
