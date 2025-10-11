@@ -29,14 +29,8 @@ function usePresenceHub(): HubConnection | null {
       .then(() => {
         console.log("SignalR Connected");
         setHubConnection(connection);
-
-        // handlers.forEach(({ handler, event }) => {
-        //   connection.off(event);
-        //   connection.on(event, handler);
-        // });
       })
       .catch((err) => console.error("Connection error: ", err));
-
     return () => {
       connection?.stop();
     };
