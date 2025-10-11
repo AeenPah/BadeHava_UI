@@ -2,8 +2,9 @@ import type { TMessage } from "@/pages/main/home/Home";
 import { useState, type FormEvent } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { SendIcon } from "lucide-react";
+import { ArrowLeftIcon, SendIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useSearchParams } from "react-router-dom";
 
 function Chat({
   user,
@@ -21,6 +22,12 @@ function Chat({
   ) => void;
 }) {
   /* -------------------------------------------------------------------------- */
+  /*                              React Router Dom                              */
+  /* -------------------------------------------------------------------------- */
+
+  const [, setSearchParams] = useSearchParams();
+
+  /* -------------------------------------------------------------------------- */
   /*                                 React Hooks                                */
   /* -------------------------------------------------------------------------- */
 
@@ -28,15 +35,20 @@ function Chat({
 
   return (
     <div className="border-2 h-full rounded-t-lg flex flex-col mb-5">
-      <div className="bg-sidebar rounded-t-lg p-2 flex gap-2 items-center">
-        <Avatar className="size-10">
-          <AvatarImage src={user.avatarUrl || ""} />
-          <AvatarFallback>
-            {user.username.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        <span>{user.username}</span>
-        <h4>Chat room: {chatRoom}</h4>
+      <div className="bg-sidebar flex justify-between rounded-t-lg p-2">
+        <div className="flex gap-2 items-center">
+          <Avatar className="size-10">
+            <AvatarImage src={user.avatarUrl || ""} />
+            <AvatarFallback>
+              {user.username.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <span>{user.username}</span>
+          <h4>Chat room: {chatRoom}</h4>
+        </div>
+        <Button variant="outline" onClick={() => setSearchParams("")}>
+          <ArrowLeftIcon />
+        </Button>
       </div>
 
       <div className="grow flex flex-col gap-1.5 m-2 relative overflow-auto">
