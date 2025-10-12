@@ -24,9 +24,13 @@ Prerequisites
 
 
 Setup & Run
+
 git clone https://github.com/AeenPah/BadeHava_UI.git
+
 cd BadeHava_UI
+
 pnpm install     # or `npm install`
+
 pnpm run dev     # start development server
 
 
