@@ -59,6 +59,12 @@ function NotificationPopover() {
   ) {
     hubConnection?.invoke("RespondFriendRequest", eventId, action);
 
+    if (action == "Accept") {
+      // TODO: make it optimized
+      setTimeout(() => {
+        window.dispatchEvent(new Event("refetchFriends"));
+      }, 5000);
+    }
     setNotification((prev) => prev.filter((p) => p.eventId !== eventId));
   }
 

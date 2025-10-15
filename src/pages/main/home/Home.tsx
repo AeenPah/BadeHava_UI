@@ -74,6 +74,13 @@ function Home() {
       (res: THubResponse<TRespondRequest>) => {
         // TODO: show the sender username and avatar
         alert(res.message);
+
+        if (res.data.action === "Accept") {
+          // TODO: make it optimized
+          setTimeout(() => {
+            window.dispatchEvent(new Event("refetchFriends"));
+          }, 5000);
+        }
       }
     );
 

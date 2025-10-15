@@ -26,14 +26,13 @@ function FriendsList() {
   const [friends, setFriends] = useState<TFriend[]>([]);
 
   useEffect(() => {
-    AXIOS.get("user/friends/", {
-      headers: {
-        Authorization: `Bearer ${getCookie("accessToken")}`,
-      },
-    }).then((res) => {
-      setFriends(res.data.data);
-    });
-    return () => {};
+    getFriends();
+
+    window.addEventListener("refetchFriends", () => getFriends());
+
+    return () => {
+      window.removeEventListener("refetchFriends", () => getFriends());
+    };
   }, []);
 
   /* -------------------------------------------------------------------------- */
@@ -42,6 +41,16 @@ function FriendsList() {
 
   function requestChat(userId: number) {
     hubConnection?.invoke("RequestChat", userId.toString());
+  }
+
+  function getFriends() {
+    AXIOS.get("user/friends/", {
+      headers: {
+        Authorization: `Bearer ${getCookie("accessToken")}`,
+      },
+    }).then((res) => {
+      setFriends(res.data.data);
+    });
   }
 
   return (
