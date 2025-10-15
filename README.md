@@ -1,69 +1,39 @@
-# React + TypeScript + Vite
+🌬️ BadeHava_UI — Frontend for the “Air Talk” Chat App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+“Bade Hava” (باد هوا) in Farsi means “air talk” or “wind talk” — words that drift away and vanish.
+That’s exactly how this chat works: live, ephemeral, real-time.
 
-Currently, two official plugins are available:
+This is the frontend implementation of the BadeHava concept — a UI built with React, TypeScript, Tailwind CSS, and shadcn/ui, powered by Vite.
+It connects to the backend API to enable real-time, no-history chatting.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🧰 Tech Stack
 
-## Expanding the ESLint configuration
+React + TypeScript — component-based frontend framework
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Vite — super fast build tool
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Tailwind CSS — utility-first styling
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+shadcn/ui — modern, accessible UI components
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+SignalR / WebSocket client — real-time messaging
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+🚀 Getting Started
+Prerequisites
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+
+Setup & Run
+
+git clone https://github.com/AeenPah/BadeHava_UI.git
+
+cd BadeHava_UI
+
+pnpm install     # or `npm install`
+
+pnpm run dev     # start development server
+
+
+To build for production:
+
+pnpm run build
