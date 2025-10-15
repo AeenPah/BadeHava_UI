@@ -27,6 +27,10 @@ type TChatMessage = {
   from: number;
   seen: boolean;
 };
+type TRespondRequest = {
+  user: TChatUser;
+  action: "Accept" | "Decline";
+};
 
 function Home() {
   /* -------------------------------------------------------------------------- */
@@ -52,6 +56,25 @@ function Home() {
     /* --------------------------------- Failed --------------------------------- */
     hubConnection?.on("FailedRequest", (res: THubResponse) =>
       alert(res.message)
+    );
+
+    /* ----------------------------- Friend Request ----------------------------- */
+    hubConnection?.on("FriendReqSend", (res: THubResponse) =>
+      alert(res.message)
+    );
+    hubConnection?.on("FriendReqReceived", (res: THubResponse<TChatUser>) => {
+      alert(res.message);
+      window.dispatchEvent(new Event("refetchEvents"));
+    });
+    hubConnection?.on("RespondFriendRequest", (res: THubResponse) =>
+      alert(res.message)
+    );
+    hubConnection?.on(
+      "SenderRespondFriendRequest",
+      (res: THubResponse<TRespondRequest>) => {
+        // TODO: show the sender username and avatar
+        alert(res.message);
+      }
     );
 
     /* ------------------------------ Chat Requests ----------------------------- */

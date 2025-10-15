@@ -5,12 +5,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import useHub from "@/hooks/useHub";
-import AXIOS from "@/lib/AxiosInstance";
-import { getCookie } from "@/utils/cookiesManagement";
 import { BellIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import NotificationItem from "./NotificationItem";
 import type { TUser } from "@/types/User";
+import GetEvents, { type TEvent } from "@/endpoints/Events/GetEvents";
 
 export type TNotification = {
   eventId: number;
@@ -28,10 +27,20 @@ function NotificationPopover() {
   /*                                 React Hooks                                */
   /* -------------------------------------------------------------------------- */
 
-  const [notifications, setNotification] = useState<TNotification[]>([]);
+  const [notifications, setNotification] = useState<TEvent[]>([]);
 
   useEffect(() => {
-    getEvents();
+    GetEvents((data) => setNotification(data.data));
+
+    window.addEventListener("refetchEvents", () =>
+      GetEvents((data) => setNotification(data.data))
+    );
+
+    return () => {
+      window.removeEventListener("refetchEvents", () =>
+        GetEvents((data) => setNotification(data.data))
+      );
+    };
   }, []);
 
   /* -------------------------------------------------------------------------- */
@@ -44,39 +53,11 @@ function NotificationPopover() {
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
 
-  function getEvents() {
-    AXIOS.get("event/", {
-      headers: {
-        Authorization: `Bearer ${getCookie("accessToken")}`,
-      },
-    }).then((res) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const tempNotifications: TNotification[] = res.data.data.map((n: any) => {
-        return {
-          eventId: n.eventId,
-          eventType: n.eventType,
-          sender: n.sender,
-          createdAt: n.createdAt,
-        };
-      });
-
-      setNotification(tempNotifications);
-    });
-  }
-
   function responseFriendRequest(
     eventId: number,
     action: "Accept" | "Decline"
   ) {
-    const data = {
-      eventId: eventId,
-      action: action,
-    };
-    AXIOS.post("event/respond-to-friend-request", data, {
-      headers: {
-        Authorization: `Bearer ${getCookie("accessToken")}`,
-      },
-    }).then((res) => alert(res.data.message));
+    hubConnection?.invoke("RespondFriendRequest", eventId, action);
 
     setNotification((prev) => prev.filter((p) => p.eventId !== eventId));
   }
